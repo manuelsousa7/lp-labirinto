@@ -1,17 +1,5 @@
 % Gonçalo Marques () && Manuel Sousa (84740)
 
-%%%%%%%%%%%%%%%%%%%%%% Q U I C K  S O R T %%%%%%%%%%%%%%%%%%%%%%%%%%
-partition([], _, [], []).
-partition([X|Xs], Pivot, Smalls, Bigs) :-
-    (   X @< Pivot ->
-        Smalls = [X|Rest],
-        partition(Xs, Pivot, Rest, Bigs)
-    ;   Bigs = [X|Rest],
-        partition(Xs, Pivot, Smalls, Rest)
-    ).
-
-quicksort([])     --> [].
-quicksort([X|Xs]) -->
-    { partition(Xs, X, Smaller, Bigger) },
-    quicksort(Smaller), [X], quicksort(Bigger).
+%%%%%%%%%%%%%%%%%%%%%% D I S T A N C I A %%%%%%%%%%%%%%%%%%%%%%%%%%
+distancia((L1,C1),(L2,C2),Dist) :- Dist is abs(L1 - L2) + abs(C1 - C2).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
