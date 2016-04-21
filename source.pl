@@ -47,10 +47,10 @@ cria_lista_restricoes(X) :- X is ["d", "e", "b", "c"].
 
 
 % Traduz a letra da direcao para uma coordenada
-devolve_coordenada(X, L) :- 	X =:= "c", L is [0,1];
-								X =:= "b", L is [0,-1];
-								X =:= "e", L is [-1,0];
-								X =:= "d", L is [1,0].
+devolve_coordenada(X, L) :- 	X == "c", L is [-1,0];
+								X == "b", L is [1,0];
+								X == "e", L is [0,-1];
+								X == "d", L is [0,1].
 
 
 %devolve uma lista com a soma dos elementos de cada indice de duas listas
@@ -64,7 +64,7 @@ cria_poss([], []).
 cria_poss([H1|T1], Poss_Lista, [[H1|Posicao] |L]) :- 	devolve_coordenada(H1, Movimento),
 														adiciona_listas(Poss_Lista, Movimento, Posicao),
 														cria_poss(T1, L).
-									
+
 
 
 % Remove os elementos iguais a X da lista [H|T1]
