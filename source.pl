@@ -5,7 +5,7 @@
 *
 * Arguments:   	(L1,C1): Coordenada 1
 *				(L2,C2): Coordenada 2
-*				Dist: Distancia calculada da Coordenada 1 a Coordeanda 2 
+*				Dist: Distancia entre as duas coordenadas - RESULTADO
 *
 * Description:  Calcula a distancia entre duas coordenadas
 *******************************************************************************/
@@ -16,25 +16,26 @@ distancia((L1,C1),(L2,C2),Dist) :- Dist is abs(L1 - L2) + abs(C1 - C2).
 /******************************************************************************
 * movs_possiveis/4
 *
-* Arguments:   	Lab 	(labirinto)
-*				[Pos_X|Pos_Y] 	(posicao atual)
-*				[Movs|Ultimo_Mov] 	(lista com so movimentos efetuados)
-*				Poss 	(movimentos possiveis)
+* Arguments:   	Lab 			(labirinto)
+*				(Pos_X, Pos_Y) 	(posicao atual)
+*				Movimentos 		(lista com os movimentos efetuados)
+*				Poss 			(movimentos possiveis) - RESULTADO
 *
-* Description:  Calcula a distancia entre duas coordenadas
+* Description:  Devolve uma lista com os movimentos possiveis
 *******************************************************************************/
 
-movs_possiveis(Lab, [Pos_X|Pos_Y], [Movs|[Ultima_Dir|Ultima_Pos]], Poss) :-	
+movs_possiveis(Lab, (Pos_X, Pos_Y), Movimentos, Poss) :-	
 		n_esimo(Pos_Y, Lab, Linha),
 		n_esimo(Pos_X, Linha, Restricoes_Lab),
 		cria_lista_restricoes(Res),
+		ultimo(Movimentos, (Direcao, Ultimo_X, Ultimo_Y)),
 		remove_elementos_iguais(Res, Lab, Restricoes),
-		remove_elemento(Restricoes, Ultima_Dir, Restricoes_Finais),
-		cria_poss(Restricoes_Finais, [Pos_X|Pos_Y], Poss).
+		remove_elemento(Restricoes, Direcao, Restricoes_Finais),
+		cria_poss(Restricoes_Finais, (Pos_X, Pos_Y), Poss).
 
 
 /******************************************************************************
-* auxiliares
+* predicados auxiliares
 *
 *******************************************************************************/
 
@@ -48,12 +49,22 @@ n_esimo(X, [_|L], N) :- N > 1, N1 is N - 1, n_esimo(X, L, N1).
 cria_lista_restricoes(X) :- X = [d, e, b, c].
 
 
+% Vai buscar o ultimo elemento de uma lista
+ultimo([X],X).
+ultimo([_|L],X) :- ultimo(L,X).
+
+
+% Converte uma lista para tuplo
+%converte_para_tuplo([], ).
+%converte_para_tuplo([H|T], (H,L)) :- converte_para_tuplo(T, L).
+
+
 % Devolve uma lista com a nova posicao apos o movimento
 adiciona_direcao([], [], []).
-adiciona_direcao([H|T], c, L) :- 	H1 is H-1, L = [H1,T].
-adiciona_direcao([H|T], b, L) :- 	H1 is H+1, L = [H1,T].
-adiciona_direcao([H|T], e, L) :- 	T1 is T-1, L = [H,T1].
-adiciona_direcao([H|T], d, L) :- 	T1 is T+1, L = [H,T1].
+adiciona_direcao((H,T), c, L) :- 	H1 is H-1, L = (H1,T).
+adiciona_direcao((H,T), b, L) :- 	H1 is H+1, L = (H1,T).
+adiciona_direcao((H,T), e, L) :- 	T1 is T-1, L = (H,T1).
+adiciona_direcao((H,T), d, L) :- 	T1 is T+1, L = (H,T1).
 
 % Remove os elementos iguais a X da lista
 remove_elemento([], _, []).
@@ -78,9 +89,6 @@ cria_poss([H|T], Poss_Lista, [Lista|L]) :-		adiciona_direcao(Poss_Lista, H, Posi
 * ordena
 *
 *******************************************************************************/
-append([], X, X).
-append([X|L1], L2, [X|L3]) :- 	append(L1, L2, L3).
-
 partition(_, [], [], []).
 partition(A, [H|T], [H|P], S) :- 	A >= H,
 									partition(A, T, P, S).
