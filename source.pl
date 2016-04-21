@@ -55,8 +55,8 @@ ultimo([_|L],X) :- ultimo(L,X).
 
 
 % Converte uma lista para tuplo
-%converte_para_tuplo([], ).
-%converte_para_tuplo([H|T], (H,L)) :- converte_para_tuplo(T, L).
+converte_para_tuplo([], _).
+converte_para_tuplo([H|T], (H,L)) :- converte_para_tuplo(T, L).
 
 
 % Devolve uma lista com a nova posicao apos o movimento
