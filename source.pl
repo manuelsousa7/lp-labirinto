@@ -47,10 +47,10 @@ cria_lista_restricoes(X) :- X is ["d", "e", "b", "c"].
 
 
 % Traduz a letra da direcao para uma coordenada
-devolve_coordenada(X, L) :- 	X == "c", L is [-1,0];
-								X == "b", L is [1,0];
-								X == "e", L is [0,-1];
-								X == "d", L is [0,1].
+devolve_coordenada(c, L) :- 	L = [-1,0].
+devolve_coordenada(b, L) :- 	L = [1,0].
+devolve_coordenada(e, L) :- 	L = [0,-1].
+evolve_coordenada(d, L) :-   	L = [0,1].
 
 
 %devolve uma lista com a soma dos elementos de cada indice de duas listas
@@ -97,3 +97,39 @@ ordena([A | L1], L2) :- 	partition(A, L1, P1, S1),
 							ordena(P1, P2), 
 							ordena(S1, S2),
 							append(P2, [A | S2], L2).
+
+
+
+/*
+bubble(X,[(X,Y)|T],[(XX,YY)|NT],Max,(Ix,Iy),(Fx,Fy)):-	distancia((X,Y),(Fx,Fy),Dist1),
+														distancia((XX,YY),(Fx,Fy),Dist2),
+														Dist1==Dist2,
+														distancia((X,Y),(Ix,Iy),Dist11),
+														distancia((XX,YY),(Ix,Iy),Dist22),
+														Dist11>Dist22,
+														bubble((X,Y),T,NT,Max).
+
+*/
+
+
+insert_sort([(S,X,Y)|T],Sorted,(Ix,Iy),(Fx,Fy)):-i_sort([(S,X,Y)|T],[],Sorted,(Ix,Iy),(Fx,Fy)).
+i_sort([],Acc,Acc,_,_).
+i_sort([(A,X,Y)|T],Acc,Sorted,(Ix,Iy),(Fx,Fy)):-	insert((A,X,Y),Acc,NAcc,(Ix,Iy),(Fx,Fy)),
+													i_sort(T,NAcc,Sorted,(Ix,Iy),(Fx,Fy)).
+   
+insert((A,X,Y),[(B,XX,YY)|T],[(B,XX,YY)|NT],_,(Fx,Fy)) :-	distancia((X,Y),(Fx,Fy),Dist1),
+																distancia((XX,YY),(Fx,Fy),Dist2),
+																Dist1>Dist2,
+																insert((A,X,Y),T,NT,_,(Fx,Fy)).
+
+insert((A,X,Y),[(B,XX,YY)|T],[(A,X,Y),(B,XX,YY)|T],_,(Fx,Fy)) :-	distancia((X,Y),(Fx,Fy),Dist1),
+																distancia((XX,YY),(Fx,Fy),Dist2),
+																Dist1=<Dist2.
+insert((A,X,Y),[],[(A,X,Y)],_,_).
+
+
+
+
+
+
+
