@@ -87,48 +87,32 @@ cria_poss([H|T], Poss_Lista, [Lista|L]) :-		adiciona_direcao(Poss_Lista, H, Posi
 
 
 /******************************************************************************
-* ordena
+* ordena_poss
 *
 *******************************************************************************/
-partition(_, [], [], []).
-partition(A, [H|T], [H|P], S) :- 	A >= H,
-									partition(A, T, P, S).
-partition(A, [H|T], P, [H|S]) :- 	A < H,
-									partition(A, T, P, S).
-
-ordena([], []).
-ordena([A | L1], L2) :- 	partition(A, L1, P1, S1),
-							ordena(P1, P2), 
-							ordena(S1, S2),
-							append(P2, [A | S2], L2).
 
 
 
-/*
-bubble(X,[(X,Y)|T],[(XX,YY)|NT],Max,(Ix,Iy),(Fx,Fy)):-	distancia((X,Y),(Fx,Fy),Dist1),
-														distancia((XX,YY),(Fx,Fy),Dist2),
-														Dist1==Dist2,
-														distancia((X,Y),(Ix,Iy),Dist11),
-														distancia((XX,YY),(Ix,Iy),Dist22),
-														Dist11>Dist22,
-														bubble((X,Y),T,NT,Max).
-
-*/
-
-
-insert_sort([(S,X,Y)|T],Sorted,(Ix,Iy),(Fx,Fy)):-i_sort([(S,X,Y)|T],[],Sorted,(Ix,Iy),(Fx,Fy)).
+ordena_poss([(S,X,Y)|T],Sorted,(Ix,Iy),(Fx,Fy)):-i_sort([(S,X,Y)|T],[],Sorted,(Ix,Iy),(Fx,Fy)).
 i_sort([],Acc,Acc,_,_).
 i_sort([(A,X,Y)|T],Acc,Sorted,(Ix,Iy),(Fx,Fy)):-	insert((A,X,Y),Acc,NAcc,(Ix,Iy),(Fx,Fy)),
 													i_sort(T,NAcc,Sorted,(Ix,Iy),(Fx,Fy)).
    
-insert((A,X,Y),[(B,XX,YY)|T],[(B,XX,YY)|NT],_,(Fx,Fy)) :-	distancia((X,Y),(Fx,Fy),Dist1),
+insert((A,X,Y),[(B,XX,YY)|T],[(B,XX,YY)|NT],_,(Fx,Fy)) :-		distancia((X,Y),(Fx,Fy),Dist1),
 																distancia((XX,YY),(Fx,Fy),Dist2),
 																Dist1>Dist2,
 																insert((A,X,Y),T,NT,_,(Fx,Fy)).
 
 insert((A,X,Y),[(B,XX,YY)|T],[(A,X,Y),(B,XX,YY)|T],_,(Fx,Fy)) :-	distancia((X,Y),(Fx,Fy),Dist1),
-																distancia((XX,YY),(Fx,Fy),Dist2),
-																Dist1=<Dist2.
+																	distancia((XX,YY),(Fx,Fy),Dist2),
+																	Dist1<Dist2.
+
+insert((A,X,Y),[(B,XX,YY)|T],[(A,X,Y),(B,XX,YY)|T],(Ix,Iy),(Fx,Fy)) :-	distancia((X,Y),(Fx,Fy),Dist1),
+																		distancia((XX,YY),(Fx,Fy),Dist2),
+																		Dist1==Dist2,
+																		distancia((X,Y),(Ix,Iy),Dist11),
+																		distancia((XX,YY),(Ix,Iy),Dist22),
+																		Dist11>Dist22.
 insert((A,X,Y),[],[(A,X,Y)],_,_).
 
 
