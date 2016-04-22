@@ -41,8 +41,8 @@ movs_possiveis(Lab, (Pos_X, Pos_Y), Movimentos, Poss) :-
 
 
 % Vai buscar o N-esimo elemento de uma lista
-n_esimo(X, [X|_], 1).
-n_esimo(X, [_|L], N) :- N > 1, N1 is N - 1, n_esimo(X, L, N1).
+n_esimo(1, [X|_], X).
+n_esimo(N, [_|L], X) :- N > 1, N1 is N - 1, n_esimo(N1, L, X).
 
 
 % Cria lista de restricoes, para que possam ser eliminadas posteriormente
@@ -65,7 +65,7 @@ adiciona_direcao((H,T), d, L) :- 	T1 is T+1, L = (H,T1).
 % Remove os elementos iguais a X da lista
 remove_elemento([], _, []).
 remove_elemento([H|T1], H, L) :- 		remove_elemento(T1, H, L).
-remove_elemento([H|T1], X, [H|L]) :-	H =\= X, remove_elemento(T1, X, L).
+remove_elemento([H|T1], X, [H|L]) :-	H \= X, remove_elemento(T1, X, L).
 
 
 % Remove da primeira lista elementos que sejam iguais aos da segunda
