@@ -123,35 +123,58 @@ cria_poss([H|T], Poss_Lista, [Lista|L]) :-		adiciona_direcao(Poss_Lista, H, Posi
 												cria_poss(T, Poss_Lista, L).
 
 
+
+
+/******************************************************************************
+* ordena_poss /4
+*
+* Arguments:   	
+*
+* Description:  Ordena (baseado em InsertionSort)
+*******************************************************************************/
 ordena_poss([],[],(_,_),(_,_)).
 ordena_poss([(A,X,Y)|Xs],Ys,(Ix,Iy),(Fx,Fy)) :-
-            ordena_poss(Xs,Zs,(Ix,Iy),(Fx,Fy)), !, insert2((A,X,Y),Zs,Ys,(Ix,Iy),(Fx,Fy)).
-insert2((A,X,Y),[],[(A,X,Y)],(_,_),(_,_)).
-insert2((A,X,Y),[(B,XX,YY)|Ys],[(B,XX,YY)|Zs],(Ix,Iy),(Fx,Fy)) :- distancia((X,Y),(Fx,Fy),Dist1),
-																distancia((XX,YY),(Fx,Fy),Dist2),
-																Dist1>Dist2, !, insert2((A,X,Y),Ys,Zs,(Ix,Iy),(Fx,Fy)).
-insert2((A,X,Y),[(B,XX,YY)|Ys],[(A,X,Y),(B,XX,YY)|Ys],(_,_),(Fx,Fy)) :- distancia((X,Y),(Fx,Fy),Dist1),
-																	distancia((XX,YY),(Fx,Fy),Dist2),
-																	Dist1<Dist2.
-insert2((A,X,Y),[(B,XX,YY)|Ys],[(A,X,Y),(B,XX,YY)|Ys],(Ix,Iy),(Fx,Fy)) :- distancia((X,Y),(Fx,Fy),Dist1),
-																		distancia((XX,YY),(Fx,Fy),Dist2),
-																		Dist1==Dist2,
-																		distancia((X,Y),(Ix,Iy),Dist11),
-																		distancia((XX,YY),(Ix,Iy),Dist22),
-																		Dist11>Dist22.
+            								ordena_poss(Xs,Zs,(Ix,Iy),(Fx,Fy)), 
+            								!, 
+            								insert((A,X,Y),Zs,Ys,(Ix,Iy),(Fx,Fy)).
+insert((A,X,Y),[],[(A,X,Y)],(_,_),(_,_)).
+insert((A,X,Y),[(B,XX,YY)|Ys],[(B,XX,YY)|Zs],(Ix,Iy),(Fx,Fy)) :- 	
+											distancia((X,Y),(Fx,Fy),Dist1),
+											distancia((XX,YY),(Fx,Fy),Dist2),
+											Dist1>Dist2, 
+											!, 
+											insert((A,X,Y),Ys,Zs,(Ix,Iy),(Fx,Fy)).
+
+insert((A,X,Y),[(B,XX,YY)|Ys],[(A,X,Y),(B,XX,YY)|Ys],(_,_),(Fx,Fy)) :- 	
+											distancia((X,Y),(Fx,Fy),Dist1),
+											distancia((XX,YY),(Fx,Fy),Dist2),
+											Dist1<Dist2.
+
+insert((A,X,Y),[(B,XX,YY)|Ys],[(B,XX,YY)|Zs],(Ix,Iy),(Fx,Fy)) :- 	
+											distancia((X,Y),(Fx,Fy),Dist1),
+											distancia((XX,YY),(Fx,Fy),Dist2),
+											Dist1==Dist2,
+											distancia((X,Y),(Ix,Iy),Dist11),
+											distancia((XX,YY),(Ix,Iy),Dist22),
+											Dist11<Dist22, 
+											!, 
+											insert((A,X,Y),Ys,Zs,(Ix,Iy),(Fx,Fy)).
 
 
-insert2((A,X,Y),[(B,XX,YY)|Ys],[(B,XX,YY)|Zs],(Ix,Iy),(Fx,Fy))  :- distancia((X,Y),(Fx,Fy),Dist1),
-																		distancia((XX,YY),(Fx,Fy),Dist2),
-																		Dist1==Dist2,
-																		distancia((X,Y),(Ix,Iy),Dist11),
-																		distancia((XX,YY),(Ix,Iy),Dist22),
-																		Dist11<Dist22, !, insert2((A,X,Y),Ys,Zs,(Ix,Iy),(Fx,Fy)).
-insert2((A,X,Y),[(B,XX,YY)|Ys],[(A,X,Y),(B,XX,YY)|Ys],(Ix,Iy),(Fx,Fy)) :- distancia((X,Y),(Fx,Fy),Dist1),
-																		distancia((XX,YY),(Fx,Fy),Dist2),
-																		Dist1==Dist2,
-																		distancia((X,Y),(Ix,Iy),Dist11),
-																		distancia((XX,YY),(Ix,Iy),Dist22),
-																		Dist11==Dist22.
+insert((A,X,Y),[(B,XX,YY)|Ys],[(A,X,Y),(B,XX,YY)|Ys],(Ix,Iy),(Fx,Fy)) :- 	
+											distancia((X,Y),(Fx,Fy),Dist1),
+											distancia((XX,YY),(Fx,Fy),Dist2),
+											Dist1==Dist2,
+											distancia((X,Y),(Ix,Iy),Dist11),
+											distancia((XX,YY),(Ix,Iy),Dist22),
+											Dist11>Dist22.
+
+insert((A,X,Y),[(B,XX,YY)|Ys],[(A,X,Y),(B,XX,YY)|Ys],(Ix,Iy),(Fx,Fy)) :- 	
+											distancia((X,Y),(Fx,Fy),Dist1),
+											distancia((XX,YY),(Fx,Fy),Dist2),
+											Dist1==Dist2,
+											distancia((X,Y),(Ix,Iy),Dist11),
+											distancia((XX,YY),(Ix,Iy),Dist22),
+											Dist11==Dist22.
 
 
