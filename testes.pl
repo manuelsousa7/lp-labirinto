@@ -179,12 +179,3 @@ escreve_resultado(Res, Sol) :-
                 writeln('\t FALHOU'),
 	        write('\t Resultado correto: '),  writeln(Sol),
 	        write('\t Resultado obtido: '),   writeln(Res)).
-
-
-
-
-
-
-
-
-
