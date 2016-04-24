@@ -11,14 +11,13 @@
 * Description:  Devolve uma lista com os movimentos possiveis
 *******************************************************************************/
 
-movs_possiveis(Lab, (Pos_X, Pos_Y), Movimentos, Poss) :-
+movs_possiveis(Lab, (Pos_X, Pos_Y), Movimentos, Poss_Final) :-
 		n_esimo(Pos_X, Lab, Linha),
 		n_esimo(Pos_Y, Linha, Restricoes_Lab),
 		cria_lista_restricoes(Res),
 		remove_elementos_iguais(Res, Restricoes_Lab, Restricoes),
-		ultimo(Movimentos, (Direcao, _, _)),
-		remove_elemento(Restricoes, Direcao, Restricoes_Finais),
-		cria_poss(Restricoes_Finais, (Pos_X, Pos_Y), Poss).
+		cria_poss(Restricoes, (Pos_X, Pos_Y), Movimentos, Poss),
+		remove_elemento(Poss, [], Poss_Final).
 
 
 /******************************************************************************
@@ -42,11 +41,11 @@ distancia((L1,C1),(L2,C2),Dist) :- Dist is abs(L1 - L2) + abs(C1 - C2).
 * Description:  Resolve um labirinto na ordem c,b,e,d
 *******************************************************************************/
 
-resolve1(Lab, Pos_inicial, (PosX_final, PosY_final), [(Dir, X, Y)|Movs]) :-
+resolve1(Lab, Pos_inicial, Pos_Final, [(Dir, X, Y)|Lista_Movs]) :-
+					verifica_vazio(Lista_Movs, Pos_inicial, Movs),
 					movs_possiveis(Lab, Pos_inicial, Movs, [(Dir, X, Y)|_]),
-					X =\= PosX_final, resolve1(Lab, Pos_inicial, (PosX_final, PosY_final), Movs);
-					X =:= PosX_final, Y =\= PosY_final, resolve1(Lab, Pos_inicial, (PosX_final, PosY_final), Movs);
-					X =:= PosX_final, Y =:= PosY_final, !.
+					(X,Y) \= Pos_Final, resolve1(Lab, Pos_inicial, Pos_Final, Movs);
+					!.
 
 
 /******************************************************************************
@@ -57,13 +56,12 @@ resolve1(Lab, Pos_inicial, (PosX_final, PosY_final), [(Dir, X, Y)|Movs]) :-
 * Description:  Resolve um labirinto tendo em conta quais das solucoes e mais rapida
 *******************************************************************************/
 
-resolve2(Lab, Pos_inicial, (PosX_final, PosY_final), [(Dir, X, Y)|Movs]) :-
+resolve2(Lab, Pos_inicial, Pos_Final, [(Dir, X, Y)|Lista_Movs]) :-
+					verifica_vazio(Lista_Movs, Pos_inicial, Movs),
 					movs_possiveis(Lab, Pos_inicial, Movs, Poss),
-					ordena_poss(Poss, [(Dir, X, Y)|_], Pos_inicial, (PosX_final, PosY_final)),
-					X =\= PosX_final, resolve1(Lab, Pos_inicial, (PosX_final, PosY_final), Movs);
-					X =:= PosX_final, Y =\= PosY_final, resolve1(Lab, Pos_inicial, (PosX_final, PosY_final), Movs);
-					X =:= PosX_final, Y =:= PosY_final, !.
-
+					ordena_poss(Poss, [(Dir, X, Y)|_], Pos_inicial, Pos_Final),
+					(X,Y) \= Pos_Final, resolve1(Lab, Pos_inicial, Pos_Final, Movs);
+					!.
 
 
 
@@ -99,10 +97,6 @@ adiciona_direcao((H,T), e, L) :- 	T1 is T-1, L = (H,T1).
 adiciona_direcao((H,T), d, L) :- 	T1 is T+1, L = (H,T1).
 
 
-% Remove o primeiro elemento de uma lista
-remove_primeiro_elemento([_|T], X) :- X = T.
-
-
 % Remove os elementos iguais a X da lista
 remove_elemento(H, x, H).
 remove_elemento([], _, []).
@@ -116,11 +110,26 @@ remove_elementos_iguais(H1, [H2|T2], L) :- 		remove_elemento(H1, H2, L1),
 												remove_elementos_iguais(L1, T2, L).
 
 
+% Devolve lista vazia se a posicao ja tiver sido percorrida
+verifica_percorrida(Poss, [], Poss).
+verifica_percorrida((Dir, Pos_X, Pos_Y), [(_,Movs_X, Movs_Y)|Cauda], Lista) :- 
+			(Pos_X, Pos_Y) == (Movs_X, Movs_Y), Lista = [];
+			verifica_percorrida((Dir, Pos_X, Pos_Y), Cauda, Lista).
+
+
 % Cria uma lista de possibilidades de movimento
-cria_poss([], _, []).
-cria_poss([H|T], Poss_Lista, [Lista|L]) :-		adiciona_direcao(Poss_Lista, H, Posicao),
-												Lista = (H,Posicao),
-												cria_poss(T, Poss_Lista, L).
+cria_poss([], _, _, []).
+cria_poss([H|T], Poss_Lista, Movs, [Lista|L]) :- 
+					adiciona_direcao(Poss_Lista, H, Posicao),
+					verifica_percorrida((H, Posicao), Movs, Lista),
+					cria_poss(T, Poss_Lista, Movs, L).
+
+
+% Se a lista de movimentos estiver vazia, devolve uma lista com (i, PosX, PosY)
+verifica_vazio([], (PosX,PosY), Movs) :-		Movs = [(i, PosX, PosY)].
+verifica_vazio(M, _, M).
+
+
 
 
 

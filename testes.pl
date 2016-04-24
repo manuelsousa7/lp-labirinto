@@ -13,24 +13,24 @@ lab(1, [[[c,e],[c],[c,d]],
         %%%%%%%%%%%%%%%%%%%%%%%% Labirinto 2 %%%%%%%%%%%%%%%%
 
 lab(2, [[[d,e,c],[e,b,c],[b,c],[c],[d,c],[d,e,c]],
-        [[e,b],[b,c],[b,c],[],[b],[d,b]],
-	[[e,c],[b,c],[b,c],[b],[b,c],[d,b,c]],
-	[[d,e],[e,c],[c],[c],[c],[d,c]],
-	[[e,b],[d,b],[e,b],[b],[b],[d,b]]],
+    	[[e,b],[b,c],[b,c],[],[b],[d,b]],
+		[[e,c],[b,c],[b,c],[b],[b,c],[d,b,c]],
+		[[d,e],[e,c],[c],[c],[c],[d,c]],
+		[[e,b],[d,b],[e,b],[b],[b],[d,b]]],
        (1,6), (5, 6)).
         %%%%%%%%%%%%%%%%%%%%%%%% Labirinto 3 %%%%%%%%%%%%%%%%
 
 lab(3, [[[d,e,c],[b,c,e],[b,c],[b,c],[c],[c],[b,c],[b,c],[d,c],[b,c,e],[b,c],[c],[c],[c],[c,d]],
-        [[e],[b,c],[b,c],[d,b,c],[d,e],[d,e],[b,c,e],[b,c],[d,b],[c,e],[d,c],[d,e],[b,e],[b],[b,d]],
-	[[d,e],[c,e],[b,c],[b,c],[d,b],[b,e],[b,c],[b,c],[d,c],[d,e],[d,e],[b,e],[b,c],[b,c],[c,d]],
-	[[d,e],[d,e],[e,c],[c],[c],[c],[d,c],[e,c],[d],[d,e],[b,e],[b,c],[b,c],[d,c],[d,e]],
-	[[d,e],[d,e],[e],[b],[b],[b],[d],[e],[d,b],[d,e],[e,c],[b,c],[b,c],[d,b],[d,e]],
-	[[d,e],[d,e],[e],[b,c],[b,c],[d,c],[d,e],[d,e],[e,c],[d,b],[b,e],[b,c],[b,c],[d,c],[d,e]],
-	[[d,e],[d,e],[e],[c],[d,c],[d,e],[d,e],[d,e],[d,e],[d,e,c],[e,c],[c],[d,c],[d,e],[d,e]],
-	[[b,e],[d,b],[b,e],[b],[d],[d,e],[e],[d],[d,e],[b,e],[b],[d,b],[d,e],[d,e],[d,e]],
-	[[e,c],[c],[c],[c],[d],[d,e],[b,e],[d,b],[d,e],[e,c],[c],[c],[d],[d,e],[d,e]],
-	[[e],[],[b],[b],[d,b],[b,e],[b,c],[b,c],[d,b],[e],[b],[b],[d,b],[d,e],[e,d]],
-	[[e,b],[b],[b,c],[b,c],[b,c],[b,c],[b,c],[b,c],[b,c],[d,b],[b,e,c],[b,c],[b,c],[b],[b,d]]],
+    	[[e],[b,c],[b,c],[d,b,c],[d,e],[d,e],[b,c,e],[b,c],[d,b],[c,e],[d,c],[d,e],[b,e],[b],[b,d]],
+		[[d,e],[c,e],[b,c],[b,c],[d,b],[b,e],[b,c],[b,c],[d,c],[d,e],[d,e],[b,e],[b,c],[b,c],[c,d]],
+		[[d,e],[d,e],[e,c],[c],[c],[c],[d,c],[e,c],[d],[d,e],[b,e],[b,c],[b,c],[d,c],[d,e]],
+		[[d,e],[d,e],[e],[b],[b],[b],[d],[e],[d,b],[d,e],[e,c],[b,c],[b,c],[d,b],[d,e]],
+		[[d,e],[d,e],[e],[b,c],[b,c],[d,c],[d,e],[d,e],[e,c],[d,b],[b,e],[b,c],[b,c],[d,c],[d,e]],
+		[[d,e],[d,e],[e],[c],[d,c],[d,e],[d,e],[d,e],[d,e],[d,e,c],[e,c],[c],[d,c],[d,e],[d,e]],
+		[[b,e],[d,b],[b,e],[b],[d],[d,e],[e],[d],[d,e],[b,e],[b],[d,b],[d,e],[d,e],[d,e]],
+		[[e,c],[c],[c],[c],[d],[d,e],[b,e],[d,b],[d,e],[e,c],[c],[c],[d],[d,e],[d,e]],
+		[[e],[],[b],[b],[d,b],[b,e],[b,c],[b,c],[d,b],[e],[b],[b],[d,b],[d,e],[e,d]],
+		[[e,b],[b],[b,c],[b,c],[b,c],[b,c],[b,c],[b,c],[b,c],[d,b],[b,e,c],[b,c],[b,c],[b],[b,d]]],
        (11,1), (1, 15)).
 
 
@@ -179,12 +179,3 @@ escreve_resultado(Res, Sol) :-
                 writeln('\t FALHOU'),
 	        write('\t Resultado correto: '),  writeln(Sol),
 	        write('\t Resultado obtido: '),   writeln(Res)).
-
-
-
-
-
-
-
-
-
