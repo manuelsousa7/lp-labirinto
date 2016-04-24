@@ -141,22 +141,22 @@ insert((A,X,Y),[],[(A,X,Y)],(_,_),(_,_)).
 insert((A,X,Y),[(B,XX,YY)|Ys],[(B,XX,YY)|Zs],(Ix,Iy),(Fx,Fy)) :- 	
 						distancia((X,Y),(Fx,Fy),Dist1),
 						distancia((XX,YY),(Fx,Fy),Dist2),
-						Dist1>Dist2, 
+						Dist1 > Dist2, 
 						!, 
 						insert((A,X,Y),Ys,Zs,(Ix,Iy),(Fx,Fy)).
 
 insert((A,X,Y),[(B,XX,YY)|Ys],[(A,X,Y),(B,XX,YY)|Ys],(_,_),(Fx,Fy)) :- 	
 						distancia((X,Y),(Fx,Fy),Dist1),
 						distancia((XX,YY),(Fx,Fy),Dist2),
-						Dist1<Dist2.
+						Dist1 < Dist2.
 
 insert((A,X,Y),[(B,XX,YY)|Ys],[(B,XX,YY)|Zs],(Ix,Iy),(Fx,Fy)) :- 	
 						distancia((X,Y),(Fx,Fy),Dist1),
 						distancia((XX,YY),(Fx,Fy),Dist2),
-						Dist1==Dist2,
+						Dist1 == Dist2,
 						distancia((X,Y),(Ix,Iy),Dist11),
 						distancia((XX,YY),(Ix,Iy),Dist22),
-						Dist11<Dist22, 
+						Dist11 < Dist22, 
 						!, 
 						insert((A,X,Y),Ys,Zs,(Ix,Iy),(Fx,Fy)).
 
@@ -164,17 +164,17 @@ insert((A,X,Y),[(B,XX,YY)|Ys],[(B,XX,YY)|Zs],(Ix,Iy),(Fx,Fy)) :-
 insert((A,X,Y),[(B,XX,YY)|Ys],[(A,X,Y),(B,XX,YY)|Ys],(Ix,Iy),(Fx,Fy)) :- 	
 						distancia((X,Y),(Fx,Fy),Dist1),
 						distancia((XX,YY),(Fx,Fy),Dist2),
-						Dist1==Dist2,
+						Dist1 == Dist2,
 						distancia((X,Y),(Ix,Iy),Dist11),
 						distancia((XX,YY),(Ix,Iy),Dist22),
-						Dist11>Dist22.
+						Dist11 > Dist22.
 
 insert((A,X,Y),[(B,XX,YY)|Ys],[(A,X,Y),(B,XX,YY)|Ys],(Ix,Iy),(Fx,Fy)) :- 	
 						distancia((X,Y),(Fx,Fy),Dist1),
 						distancia((XX,YY),(Fx,Fy),Dist2),
-						Dist1==Dist2,
+						Dist1 == Dist2,
 						distancia((X,Y),(Ix,Iy),Dist11),
 						distancia((XX,YY),(Ix,Iy),Dist22),
-						Dist11==Dist22.
+						Dist11 == Dist22.
 
 
