@@ -49,19 +49,21 @@ resolve1(Lab, Pos_Inicial, Pos_Final, Lista_Movs) :-
 					resolve1(Lab, Pos_Inicial, Pos_Final, Pos_Inicial, [(i, Pos_Inicial)], Lista),
 					append([(i, Pos_Inicial)], Lista, Lista_Movs).
 
-resolve1(_, _, Pos_Final, Pos_Final, _, []).
+resolve1(_, _, Pos_Final, Pos_Final, Lista_Movs, Lista_Movs).
 
-resolve1(Lab, Pos_Inicial, Pos_Final, Pos_Atual, Movs, [(Dir, X, Y)|Lista_Movs]) :-
+resolve1(Lab, Pos_Inicial, Pos_Final, Pos_Atual, Movs, Lista_Movs) :-
 					Pos_Final \= Pos_Atual,
 					movs_possiveis(Lab, Pos_Atual, Movs, Poss),
-					testa_resolve1(Lab, Pos_Inicial, Pos_Final, (X,Y), Movs, Poss, Lista_Movs).
+					testa_resolve1(Lab, Pos_Inicial, Pos_Final, Pos_Atual, Movs, Poss, Lista_Movs).
 
-% Vai tentar resolver as hipoteses todas dos movimentos possiveis
+
+% Vai tentar resolver as hipoteses considerando todos movimentos possiveis
 testa_resolve1(_, _, _, _, _, [], _) :- !.
-testa_resolve1(Lab, Pos_Inicial, Pos_Final, (X,Y), Movs, [Mov_1|MovsResto], Lista_Movs) :-
+testa_resolve1(Lab, Pos_Inicial, Pos_Final, Pos_Atual, Movs, [(Dir, X, Y)|MovsResto], Lista_Movs) :-
 					append(Movs, [(Dir, X, Y)], Movimentos),
 					resolve1(Lab, Pos_Inicial, Pos_Final, (X,Y), Movimentos, Lista_Movs),
-					testa_resolve1(Lab, Pos_Inicial, Pos_Final, (X,Y), Movs, MovsResto, Lista_Movs).
+					Pos_Final \= (X,Y),
+					testa_resolve1(Lab, Pos_Inicial, Pos_Final, Pos_Atual, Movs, MovsResto, Lista_Movs).
 
 
 /******************************************************************************
