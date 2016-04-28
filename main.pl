@@ -3,10 +3,10 @@
 /******************************************************************************
 * movs_possiveis /4
 *
-* Arguments:   	Lab 			(labirinto)
-*				(Pos_X, Pos_Y) 	(posicao atual)
-*				Movimentos 		(lista com os movimentos efetuados)
-*				Poss 			(movimentos possiveis) - RESULTADO
+* Arguments:   	Lab 			Labirinto
+*				(Pos_X, Pos_Y) 	Posicao atual
+*				Movimentos 		Lista com os movimentos efetuados
+*				Poss 			Movimentos possiveis - RESULTADO
 *
 * Description:  Devolve uma lista com os movimentos possiveis
 *******************************************************************************/
@@ -23,9 +23,9 @@ movs_possiveis(Lab, (Pos_X, Pos_Y), Movimentos, Poss_Final) :-
 /******************************************************************************
 * distancia /3
 *
-* Arguments:   	(L1,C1): Coordenada 1
-*				(L2,C2): Coordenada 2
-*				Dist: Distancia entre as duas coordenadas - RESULTADO
+* Arguments:   	(L1,C1)			Coordenada 1
+*				(L2,C2)			Coordenada 2
+*				Dist 			Distancia entre as duas coordenadas	- RESULTADO
 *
 * Description:  Calcula a distancia entre duas coordenadas
 *******************************************************************************/
@@ -36,37 +36,54 @@ distancia((L1,C1),(L2,C2),Dist) :- Dist is abs(L1 - L2) + abs(C1 - C2).
 /******************************************************************************
 * resolve1 /4
 *
-* Arguments:   	
+* Arguments:   	Lab 			Labirinto
+*				Pos_Inicial		Posicao inicial
+*				Pos_Final 		Posicao final
+*				Pos_Atual		Posicao atual
+*				Lista_Movs		Lista com os movimentos efetuados - RESULTADO
 *
 * Description:  Resolve um labirinto na ordem c,b,e,d
 *******************************************************************************/
-resolve1(_, _, Pos_Final, [(Dir, Pos_Final)|Lista_Movs]) :- Lista_Movs = [].
-resolve1(Lab, Pos_inicial, Pos_Final, [(Dir, X, Y)|Lista_Movs]) :-
-					verifica_vazio(Lista_Movs, Pos_inicial, Movs),
-					movs_possiveis(Lab, Pos_inicial, Movs, [(Dir, X, Y)|Lista_Movs]),
-					(X,Y) \= Pos_Final,
-					testa_resolve(Lab, Pos_inicial, Pos_Final, Movs, [(Dir, X, Y)|Lista_Movs], Lista_Movs).
 
+resolve1(Lab, Pos_Inicial, Pos_Final, Lista_Movs) :-
+					resolve1(Lab, Pos_Inicial, Pos_Final, Pos_Inicial, [(i, Pos_Inicial)], Lista),
+					append([(i, Pos_Inicial)], Lista, Lista_Movs).
 
-testa_resolve(_, ) :- 
-testa_resolve(Lab, Pos_inicial, Pos_Final, Movs, [Possiveis|Cauda], [(Dir, X, Y)|Lista_Movs]) :- 
-					resolve1(Lab, Pos_inicial, Pos_Final, Movs),
-					testa_resolve(Lab, Pos_inicial, Pos_Final, Movs, Cauda, Lista_Movs).
+resolve1(_, _, Pos_Final, Pos_Final, _, []).
+
+resolve1(Lab, Pos_Inicial, Pos_Final, Pos_Atual, Movs, [(Dir, X, Y)|Lista_Movs]) :-
+					Pos_Final \= Pos_Atual,
+					movs_possiveis(Lab, Pos_Atual, Movs, Poss),
+					testa_resolve1(Lab, Pos_Inicial, Pos_Final, (X,Y), Movs, Poss, Lista_Movs).
+
+% Vai tentar resolver as hipoteses todas dos movimentos possiveis
+testa_resolve1(_, _, _, _, _, [], _) :- !.
+testa_resolve1(Lab, Pos_Inicial, Pos_Final, (X,Y), Movs, [Mov_1|MovsResto], Lista_Movs) :-
+					append(Movs, [(Dir, X, Y)], Movimentos),
+					resolve1(Lab, Pos_Inicial, Pos_Final, (X,Y), Movimentos, Lista_Movs),
+					testa_resolve1(Lab, Pos_Inicial, Pos_Final, (X,Y), Movs, MovsResto, Lista_Movs).
+
 
 /******************************************************************************
 * resolve2 /4
 *
 * Arguments:   	
 *
-* Description:  Resolve um labirinto tendo em conta quais das solucoes e mais rapida
+* Description:  Resolve um labirinto tendo em conta qual das solucoes esta mais proxima do final
 *******************************************************************************/
+resolve2(Lab, Pos_Inicial, Pos_Final, Lista_Movs) :-
+					resolve2(Lab, Pos_Inicial, Pos_Final, Pos_Inicial, [(i, Pos_Inicial)], Lista),
+					append([(i, Pos_Inicial)], Lista, Lista_Movs).
 
-resolve2(Lab, Pos_inicial, Pos_Final, [(Dir, X, Y)|Lista_Movs]) :-
-					verifica_vazio(Lista_Movs, Pos_inicial, Movs),
-					movs_possiveis(Lab, Pos_inicial, Movs, Poss),
-					ordena_poss(Poss, [(Dir, X, Y)|_], Pos_inicial, Pos_Final),
-					(X,Y) \= Pos_Final, resolve1(Lab, Pos_inicial, Pos_Final, Movs);
-					!.
+resolve2(_, _, Pos_Final, Pos_Final, _, []).
+
+resolve2(Lab, Pos_Inicial, Pos_Final, Pos_Atual, Movs, [(Dir, X, Y)|Lista_Movs]) :-
+					Pos_Final \= Pos_Atual,
+					movs_possiveis(Lab, Pos_Atual, Movs, Movs_Possiveis),
+					ordena_poss(Movs_Possiveis, [(Dir, X, Y)|_], Pos_Inicial, Pos_Final),
+					append(Movs, [(Dir, X, Y)], Movimentos),
+					resolve2(Lab, Pos_Inicial, Pos_Final, (X,Y), Movimentos, Lista_Movs).
+
 
 
 
@@ -130,13 +147,6 @@ cria_poss([H|T], Poss_Lista, Movs, [Lista|L]) :-
 					cria_poss(T, Poss_Lista, Movs, L).
 
 
-% Se a lista de movimentos estiver vazia, devolve uma lista com (i, PosX, PosY)
-verifica_vazio([], (PosX,PosY), Movs) :-		Movs = [(i, PosX, PosY)].
-verifica_vazio(M, _, M).
-
-
-
-
 
 
 /******************************************************************************
@@ -190,5 +200,3 @@ insert((A,X,Y),[(B,XX,YY)|Ys],[(A,X,Y),(B,XX,YY)|Ys],(Ix,Iy),(Fx,Fy)) :-
 						distancia((X,Y),(Ix,Iy),Dist11),
 						distancia((XX,YY),(Ix,Iy),Dist22),
 						Dist11 == Dist22.
-
-
