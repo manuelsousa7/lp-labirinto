@@ -40,13 +40,18 @@ distancia((L1,C1),(L2,C2),Dist) :- Dist is abs(L1 - L2) + abs(C1 - C2).
 *
 * Description:  Resolve um labirinto na ordem c,b,e,d
 *******************************************************************************/
-
+resolve1(_, _, Pos_Final, [(Dir, Pos_Final)|Lista_Movs]) :- Lista_Movs = [].
 resolve1(Lab, Pos_inicial, Pos_Final, [(Dir, X, Y)|Lista_Movs]) :-
 					verifica_vazio(Lista_Movs, Pos_inicial, Movs),
-					movs_possiveis(Lab, Pos_inicial, Movs, [(Dir, X, Y)|_]),
-					(X,Y) \= Pos_Final, resolve1(Lab, Pos_inicial, Pos_Final, Movs);
-					!.
+					movs_possiveis(Lab, Pos_inicial, Movs, [(Dir, X, Y)|Lista_Movs]),
+					(X,Y) \= Pos_Final,
+					testa_resolve(Lab, Pos_inicial, Pos_Final, Movs, [(Dir, X, Y)|Lista_Movs], Lista_Movs).
 
+
+testa_resolve(_, ) :- 
+testa_resolve(Lab, Pos_inicial, Pos_Final, Movs, [Possiveis|Cauda], [(Dir, X, Y)|Lista_Movs]) :- 
+					resolve1(Lab, Pos_inicial, Pos_Final, Movs),
+					testa_resolve(Lab, Pos_inicial, Pos_Final, Movs, Cauda, Lista_Movs).
 
 /******************************************************************************
 * resolve2 /4
