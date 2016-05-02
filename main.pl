@@ -45,33 +45,27 @@ distancia((L1,C1),(L2,C2),Dist) :- Dist is abs(L1 - L2) + abs(C1 - C2).
 *******************************************************************************/
 
 resolve1(Lab, Pos_Inicial, Pos_Final, Lista_Movs) :-
-					resolve1(Lab, Pos_Final, Pos_Inicial, [(i, Pos_Inicial)], Lista_Movs).
+					resolve1(Lab, Pos_Final, Pos_Inicial, 1, [], Lista_Movs).
+					
+resolve1(_, Pos_Final, Pos_Final, _, Lista_Movs, Lista_Movs).
 
-resolve1(_, Pos_Final, Pos_Final, Lista_Movs, Lista_Movs).
+resolve1(_, _, _, [], _, _) :- !.
 
-resolve1(Lab, Pos_Final, Pos_Atual, Movs, Lista_Movs) :-
+resolve1(Lab, Pos_Final, Pos_Inicial, _, [], Lista_Movs) :-
+					movs_possiveis(Lab, Pos_Inicial, [(i, Pos_Inicial)], Poss),
+					resolve1(Lab, Pos_Final, Pos_Inicial, Poss, [(i, Pos_Inicial)], Lista_Movs).
+
+resolve1(Lab, Pos_Final, Pos_Atual, [(Dir, X, Y)|Poss_Resto], Movs, Lista_Movs) :-
 					Pos_Final \= Pos_Atual,
-					movs_possiveis(Lab, Pos_Atual, Movs, Poss),
-					write('movs:'), write(Poss),nl,
-					testa_resolve1(Lab, Pos_Final, Pos_Atual, Movs, Poss, Lista_Movs).
-
-exper(X, Y) :- 	ver(X, Y), nonvar(Y);
-				write("1").
-
-ver(2, _) :- !.
-ver(_, Y) :- Y is 3.
-
-% Vai tentar resolver as hipoteses considerando todos movimentos possiveis
-%testa_resolve1(_, _, _, _, [], _) :- !.
-testa_resolve1(Lab, Pos_Final, Pos_Atual, Movs, [(Dir, X, Y)|MovsResto], Lista_Movs) :-
-					(append(Movs, [(Dir, X, Y)], Movimentos),
-					resolve1(Lab,  Pos_Final, (X,Y), Movimentos, Lista_Movs));
-					write('nunca chego aqui...'),nl,nl,nl,
-					testa_resolve1(Lab, Pos_Final, Pos_Atual, Movs, MovsResto, Lista_Movs).
+					append(Movs, [(Dir, X, Y)], Movimentos),
+					movs_possiveis(Lab, (X,Y), Movimentos, Poss),
+					resolve1(Lab,  Pos_Final, (X,Y), Poss, Movimentos, Lista_Movs);
+					write("Entrei aqui!"), nl,
+					resolve1(Lab, Pos_Final, Pos_Atual, Movs, Poss_Resto, Lista_Movs).
 
 % L = [[[e,c],[c,d,b]],[[e,b],[c,b,d]]]
 
-%	Pi = (3,2), Pf = (3,3)
+%	Pi = (2,1), Pf = (2,2)
 /******************************************************************************
 * resolve2 /4
 *
