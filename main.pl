@@ -14,8 +14,7 @@
 movs_possiveis(Lab, (Pos_X, Pos_Y), Movimentos, Poss_Final) :-
 		n_esimo(Pos_X, Lab, Linha),
 		n_esimo(Pos_Y, Linha, Restricoes_Lab),
-		cria_lista_restricoes(Res),
-		remove_elementos_iguais(Res, Restricoes_Lab, Restricoes),
+		remove_elementos_iguais([c, b, e, d], Restricoes_Lab, Restricoes),
 		cria_poss(Restricoes, (Pos_X, Pos_Y), Movimentos, Poss),
 		remove_elemento(Poss, [], Poss_Final).
 
@@ -46,14 +45,15 @@ distancia((L1,C1),(L2,C2),Dist) :- Dist is abs(L1 - L2) + abs(C1 - C2).
 *******************************************************************************/
 
 resolve1(Lab, Pos_Inicial, Pos_Final, Lista_Movs) :-
-					resolve1(Lab, Pos_Inicial, Pos_Final, Pos_Inicial, [(i, Pos_Inicial)], Lista_Movs).
+					resolve1(Lab, Pos_Final, Pos_Inicial, [(i, Pos_Inicial)], Lista_Movs).
 
-resolve1(_, _, Pos_Final, Pos_Final, Lista_Movs, Lista_Movs).
+resolve1(_, Pos_Final, Pos_Final, Lista_Movs, Lista_Movs).
 
-resolve1(Lab, Pos_Inicial, Pos_Final, Pos_Atual, Movs, Lista_Movs) :-
+resolve1(Lab, Pos_Final, Pos_Atual, Movs, Lista_Movs) :-
 					Pos_Final \= Pos_Atual,
 					movs_possiveis(Lab, Pos_Atual, Movs, Poss),
-					testa_resolve1(Lab, Pos_Inicial, Pos_Final, Pos_Atual, Movs, Poss, Lista_Movs).
+					write('movs:'), write(Poss),nl,
+					testa_resolve1(Lab, Pos_Final, Pos_Atual, Movs, Poss, Lista_Movs).
 
 exper(X, Y) :- 	ver(X, Y), nonvar(Y);
 				write("1").
@@ -62,13 +62,16 @@ ver(2, _) :- !.
 ver(_, Y) :- Y is 3.
 
 % Vai tentar resolver as hipoteses considerando todos movimentos possiveis
-testa_resolve1(_, _, _, _, _, [], _) :- !.
-testa_resolve1(Lab, Pos_Inicial, Pos_Final, Pos_Atual, Movs, [(Dir, X, Y)|MovsResto], Lista_Movs) :-
-					append(Movs, [(Dir, X, Y)], Movimentos),
-					resolve1(Lab, Pos_Inicial, Pos_Final, (X,Y), Movimentos, Lista_Movs);
-					testa_resolve1(Lab, Pos_Inicial, Pos_Final, Pos_Atual, Movs, MovsResto, Lista_Movs).
+%testa_resolve1(_, _, _, _, [], _) :- !.
+testa_resolve1(Lab, Pos_Final, Pos_Atual, Movs, [(Dir, X, Y)|MovsResto], Lista_Movs) :-
+					(append(Movs, [(Dir, X, Y)], Movimentos),
+					resolve1(Lab,  Pos_Final, (X,Y), Movimentos, Lista_Movs));
+					write('nunca chego aqui...'),nl,nl,nl,
+					testa_resolve1(Lab, Pos_Final, Pos_Atual, Movs, MovsResto, Lista_Movs).
 
+% L = [[[e,c],[c,d,b]],[[e,b],[c,b,d]]]
 
+%	Pi = (3,2), Pf = (3,3)
 /******************************************************************************
 * resolve2 /4
 *
@@ -106,10 +109,6 @@ n_esimo(1, [X|_], X).
 n_esimo(N, [_|L], X) :- N > 1, N1 is N - 1, n_esimo(N1, L, X).
 
 
-% Cria lista de restricoes, para que possam ser eliminadas posteriormente
-cria_lista_restricoes(X) :- X = [c, b, e, d].
-
-
 % Devolve o ultimo elemento de uma lista
 ultimo([], (x,y,z)).
 ultimo([X],X).
@@ -125,27 +124,27 @@ adiciona_direcao((H,T), d, L) :- 	T1 is T+1, L = (H,T1).
 
 
 % Remove os elementos iguais a X da lista
-remove_elemento(H, x, H).
-remove_elemento([], _, []).
+remove_elemento(H, x, H) :- !.
+remove_elemento([], _, []) :- !.
 remove_elemento([H|T1], H, L) :- 		remove_elemento(T1, H, L).
 remove_elemento([H|T1], X, [H|L]) :-	H \= X, remove_elemento(T1, X, L).
 
 
 % Remove da primeira lista elementos que sejam iguais aos da segunda
-remove_elementos_iguais(L, [], L).
+remove_elementos_iguais(L, [], L) :- !.
 remove_elementos_iguais(H1, [H2|T2], L) :- 		remove_elemento(H1, H2, L1),
 												remove_elementos_iguais(L1, T2, L).
 
 
 % Devolve lista vazia se a posicao ja tiver sido percorrida
-verifica_percorrida(Poss, [], Poss).
+verifica_percorrida(Poss, [], Poss) :- !.
 verifica_percorrida((Dir, Pos_X, Pos_Y), [(_,Movs_X, Movs_Y)|Cauda], Lista) :- 
 			(Pos_X, Pos_Y) == (Movs_X, Movs_Y), Lista = [];
 			verifica_percorrida((Dir, Pos_X, Pos_Y), Cauda, Lista).
 
 
 % Cria uma lista de possibilidades de movimento
-cria_poss([], _, _, []).
+cria_poss([], _, _, []) :- !.
 cria_poss([H|T], Poss_Lista, Movs, [Lista|L]) :- 
 					adiciona_direcao(Poss_Lista, H, Posicao),
 					verifica_percorrida((H, Posicao), Movs, Lista),
