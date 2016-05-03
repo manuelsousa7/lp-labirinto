@@ -53,45 +53,53 @@ resolve1(_, Pos_Final, Pos_Final, _, Lista_Movs, Lista_Movs) :- !.
 resolve1(_, _, _, [], _, _).
 
 resolve1(Lab, Pos_Final, Pos_Atual, [(Dir, X, Y)|Poss_Resto], Movs, Lista_Movs) :-
-					Pos_Final \= Pos_Atual,
-					[(Dir, X, Y)|Poss_Resto] \= [],
-					append(Movs, [(Dir, X, Y)], Movimentos),
-					movs_possiveis(Lab, (X,Y), Movimentos, Poss),
-					resolve1(Lab,  Pos_Final, (X,Y), Poss, Movimentos, Lista_Movs),
-					resolve1(Lab, Pos_Final, Pos_Atual, Poss_Resto, Movs, Lista_Movs).
+					var(Lista_Movs),(
+						Pos_Final \= Pos_Atual,
+						[(Dir, X, Y)|Poss_Resto] \= [],
+						append(Movs, [(Dir, X, Y)], Movimentos),
+						movs_possiveis(Lab, (X,Y), Movimentos, Poss),
+						resolve1(Lab,  Pos_Final, (X,Y), Poss, Movimentos, Lista_Movs),
+						resolve1(Lab, Pos_Final, Pos_Atual, Poss_Resto, Movs, Lista_Movs)
+					);
+					!.
 
-exper(X) :- X = 1. 
-% L = [[[e,c],[c,d,b]],[[e,b],[c,b,d]]]
-
-%	Pi = (2,1), Pf = (2,2)
 /******************************************************************************
 * resolve2 /4
 *
-* Arguments:   	
+* Arguments:   	Lab 			Labirinto
+*				Pos_Inicial		Posicao inicial
+*				Pos_Final 		Posicao final
+*				Pos_Atual		Posicao atual
+*				Lista_Movs		Lista com os movimentos efetuados - RESULTADO 	
 *
 * Description:  Resolve um labirinto tendo em conta qual das solucoes esta mais proxima do final
 *******************************************************************************/
+
 resolve2(Lab, Pos_Inicial, Pos_Final, Lista_Movs) :-
-					resolve2(Lab, Pos_Inicial, Pos_Final, Pos_Inicial, [(i, Pos_Inicial)], Lista),
-					append([(i, Pos_Inicial)], Lista, Lista_Movs).
+					movs_possiveis(Lab, Pos_Inicial, [(i, Pos_Inicial)], Possibilidades),
+					ordena_poss(Possibilidades, Poss, Pos_Inicial, Pos_Final),
+					resolve2(Lab, Pos_Final, Pos_Inicial, Poss, [(i, Pos_Inicial)], Lista_Movs).
+					
+resolve2(_, Pos_Final, Pos_Final, _, Lista_Movs, Lista_Movs) :- !.
 
-resolve2(_, _, Pos_Final, Pos_Final, _, []).
+resolve2(_, _, _, [], _, _).
 
-resolve2(Lab, Pos_Inicial, Pos_Final, Pos_Atual, Movs, [(Dir, X, Y)|Lista_Movs]) :-
-					Pos_Final \= Pos_Atual,
-					movs_possiveis(Lab, Pos_Atual, Movs, Movs_Possiveis),
-					ordena_poss(Movs_Possiveis, [(Dir, X, Y)|_], Pos_Inicial, Pos_Final),
-					append(Movs, [(Dir, X, Y)], Movimentos),
-					resolve2(Lab, Pos_Inicial, Pos_Final, (X,Y), Movimentos, Lista_Movs).
-
-
-
-
-
+resolve2(Lab, Pos_Final, Pos_Atual, [(Dir, X, Y)|Poss_Resto], [(Dir_Ini, X_Ini, Y_Ini), Movs_Resto], Lista_Movs) :-
+					var(Lista_Movs),(
+						Pos_Final \= Pos_Atual,
+						[(Dir, X, Y)|Poss_Resto] \= [],
+						append([(Dir_Ini, X_Ini, Y_Ini), Movs_Resto], [(Dir, X, Y)], Movimentos),
+						movs_possiveis(Lab, (X,Y), Movimentos, Possibilidades),
+						ordena_poss(Possibilidades, Poss, (X_Ini, Y_Ini), Pos_Final),
+						resolve2(Lab,  Pos_Final, (X,Y), Poss, Movimentos, Lista_Movs),
+						resolve2(Lab, Pos_Final, Pos_Atual, Poss_Resto, [(Dir_Ini, X_Ini, Y_Ini), Movs_Resto], Lista_Movs)
+					);
+					!.
 
 
 /******************************************************************************
-* predicados auxiliares
+*
+* predicados auxiliares (usados no movs_possiveis)
 *
 *******************************************************************************/
 
@@ -99,12 +107,6 @@ resolve2(Lab, Pos_Inicial, Pos_Final, Pos_Atual, Movs, [(Dir, X, Y)|Lista_Movs])
 % Devolve o N-esimo elemento de uma lista
 n_esimo(1, [X|_], X).
 n_esimo(N, [_|L], X) :- N > 1, N1 is N - 1, n_esimo(N1, L, X).
-
-
-% Devolve o ultimo elemento de uma lista
-ultimo([], (x,y,z)).
-ultimo([X],X).
-ultimo([_|L],X) :- ultimo(L,X).
 
 
 % Devolve um tuplo com a nova posicao apos o movimento
@@ -148,15 +150,18 @@ cria_poss([H|T], Poss_Lista, Movs, [Lista|L]) :-
 /******************************************************************************
 * ordena_poss /4
 *
-* Arguments:   	
+* Arguments:   	Possibilidades de movimento
+*				Possibilidades de movimento organizadas - RESULTADO
+*				Posicao inicial
+*				Posicao final  	
 *
-* Description:  Ordena (baseado em InsertionSort)
+* Description:  Ordena a lista de movimentos possiveis (baseado em InsertionSort)
 *******************************************************************************/
 ordena_poss([],[],(_,_),(_,_)).
 ordena_poss([(A,X,Y)|Xs],Ys,(Ix,Iy),(Fx,Fy)) :-
-            			ordena_poss(Xs,Zs,(Ix,Iy),(Fx,Fy)), 
-            			!, 
-            			insert((A,X,Y),Zs,Ys,(Ix,Iy),(Fx,Fy)).
+						ordena_poss(Xs,Zs,(Ix,Iy),(Fx,Fy)), 
+						!, 
+						insert((A,X,Y),Zs,Ys,(Ix,Iy),(Fx,Fy)).
 insert((A,X,Y),[],[(A,X,Y)],(_,_),(_,_)).
 insert((A,X,Y),[(B,XX,YY)|Ys],[(B,XX,YY)|Zs],(Ix,Iy),(Fx,Fy)) :- 	
 						distancia((X,Y),(Fx,Fy),Dist1),
