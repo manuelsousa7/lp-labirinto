@@ -1,4 +1,4 @@
-:- ['aux'].
+:- ['lp-g1'].
 :- discontiguous corre_testes/1.
 %%%%%%%%%%%%%%%%%%%%%%% Labirintos para testes  %%%%%%%%%%%%%%%%%%%%%%%
 % lab(N, Lab, Pos_inicial, Pos_final): N e' o numero do labirinto (1,2, ou 3);
