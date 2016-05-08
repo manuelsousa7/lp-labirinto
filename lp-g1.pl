@@ -90,23 +90,23 @@ distancia((L1,C1),(L2,C2),Dist) :- Dist is abs(L1 - L2) + abs(C1 - C2).
 *******************************************************************************/
 
 resolve1(Lab, Pos_Inicial, Pos_Final, Lista_Movs) :-
-					movs_possiveis(Lab, Pos_Inicial, [(i, Pos_Inicial)], Poss),
-					resolve1(Lab, Pos_Final, Pos_Inicial, Poss, [(i, Pos_Inicial)], Lista_Movs), !.
+			movs_possiveis(Lab, Pos_Inicial, [(i, Pos_Inicial)], Poss),
+			resolve1(Lab, Pos_Final, Pos_Inicial, Poss, [(i, Pos_Inicial)], Lista_Movs), !.
 					
 resolve1(_, Pos_Final, Pos_Final, _, Lista_Movs, Lista_Movs) :- !.
 
 resolve1(_, _, _, [], _, _).
 
 resolve1(Lab, Pos_Final, Pos_Atual, [(Dir, X, Y)|Poss_Resto], Movs, Lista_Movs) :-
-					var(Lista_Movs),(
-						Pos_Final \= Pos_Atual,
-						[(Dir, X, Y)|Poss_Resto] \= [],
-						append(Movs, [(Dir, X, Y)], Movimentos),
-						movs_possiveis(Lab, (X,Y), Movimentos, Poss),
-						resolve1(Lab,  Pos_Final, (X,Y), Poss, Movimentos, Lista_Movs),
-						resolve1(Lab, Pos_Final, Pos_Atual, Poss_Resto, Movs, Lista_Movs)
-					);
-					!.
+			var(Lista_Movs),(
+				Pos_Final \= Pos_Atual,
+				[(Dir, X, Y)|Poss_Resto] \= [],
+				append(Movs, [(Dir, X, Y)], Movimentos),
+				movs_possiveis(Lab, (X,Y), Movimentos, Poss),
+				resolve1(Lab,  Pos_Final, (X,Y), Poss, Movimentos, Lista_Movs),
+				resolve1(Lab, Pos_Final, Pos_Atual, Poss_Resto, Movs, Lista_Movs)
+			);
+			!.
 
 /******************************************************************************
 * resolve2 /4
@@ -121,25 +121,25 @@ resolve1(Lab, Pos_Final, Pos_Atual, [(Dir, X, Y)|Poss_Resto], Movs, Lista_Movs) 
 *******************************************************************************/
 
 resolve2(Lab, Pos_Inicial, Pos_Final, Lista_Movs) :-
-					movs_possiveis(Lab, Pos_Inicial, [(i, Pos_Inicial)], Possibilidades),
-					ordena_poss(Possibilidades, Poss, Pos_Inicial, Pos_Final),
-					resolve2(Lab, Pos_Final, Pos_Inicial, Poss, [(i, Pos_Inicial)], Lista_Movs).
+			movs_possiveis(Lab, Pos_Inicial, [(i, Pos_Inicial)], Possibilidades),
+			ordena_poss(Possibilidades, Poss, Pos_Inicial, Pos_Final),
+			resolve2(Lab, Pos_Final, Pos_Inicial, Poss, [(i, Pos_Inicial)], Lista_Movs).
 					
 resolve2(_, Pos_Final, Pos_Final, _, Lista_Movs, Lista_Movs) :- !.
 
 resolve2(_, _, _, [], _, _).
 
 resolve2(Lab, Pos_Final, Pos_Atual, [(Dir, X, Y)|Poss_Resto], [(Dir_Ini, X_Ini, Y_Ini)|Movs_Resto], Lista_Movs) :-
-					var(Lista_Movs),(
-						Pos_Final \= Pos_Atual,
-						[(Dir, X, Y)|Poss_Resto] \= [],
-						append([(Dir_Ini, X_Ini, Y_Ini)|Movs_Resto], [(Dir, X, Y)], Movimentos),
-						movs_possiveis(Lab, (X,Y), Movimentos, Possibilidades),
-						ordena_poss(Possibilidades, Poss, (X_Ini, Y_Ini), Pos_Final),
-						resolve2(Lab,  Pos_Final, (X,Y), Poss, Movimentos, Lista_Movs),
-						resolve2(Lab, Pos_Final, Pos_Atual, Poss_Resto, [(Dir_Ini, X_Ini, Y_Ini)|Movs_Resto], Lista_Movs)
-					);
-					!.
+			var(Lista_Movs),(
+				Pos_Final \= Pos_Atual,
+				[(Dir, X, Y)|Poss_Resto] \= [],
+				append([(Dir_Ini, X_Ini, Y_Ini)|Movs_Resto], [(Dir, X, Y)], Movimentos),
+				movs_possiveis(Lab, (X,Y), Movimentos, Possibilidades),
+				ordena_poss(Possibilidades, Poss, (X_Ini, Y_Ini), Pos_Final),
+				resolve2(Lab,  Pos_Final, (X,Y), Poss, Movimentos, Lista_Movs),
+				resolve2(Lab, Pos_Final, Pos_Atual, Poss_Resto, [(Dir_Ini, X_Ini, Y_Ini)|Movs_Resto], Lista_Movs)
+			);
+			!.
 
 /******************************************************************************
 * ordena_poss /4
