@@ -83,7 +83,6 @@ distancia((L1,C1),(L2,C2),Dist) :- Dist is abs(L1 - L2) + abs(C1 - C2).
 * Arguments:    Lab             Labirinto
 *               Pos_Inicial     Posicao inicial
 *               Pos_Final       Posicao final
-*               Pos_Atual       Posicao atual
 *               Lista_Movs      Lista com os movimentos efetuados - PRETENDIDO
 *
 * Description:  Resolve um labirinto na ordem c,b,e,d
@@ -114,7 +113,6 @@ resolve1(Lab, Pos_Final, Pos_Atual, [(Dir, X, Y)|Poss_Resto], Movs, Lista_Movs) 
 * Arguments:    Lab             Labirinto
 *               Pos_Inicial     Posicao inicial
 *               Pos_Final       Posicao final
-*               Pos_Atual       Posicao atual
 *               Lista_Movs      Lista com os movimentos efetuados - PRETENDIDO  
 *
 * Description:  Resolve um labirinto tendo em conta qual das solucoes esta mais proxima do final
